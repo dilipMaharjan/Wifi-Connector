@@ -1,39 +1,38 @@
-package com.androidflux.assestment.androidflux
+package com.androidflux.assestment.androidflux.view
 
-import android.app.Application
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.androidflux.assestment.androidflux.action.ConnectWifiActionCreator
-import com.androidflux.assestment.androidflux.dagger.DaggerApplicationComponent
-import com.androidflux.assestment.androidflux.dagger.component
-import com.androidflux.assestment.androidflux.store.NumberStore
+import android.widget.Toast
+import com.androidflux.assestment.androidflux.R
+import com.androidflux.assestment.androidflux.action.MyActionCreators
+import com.androidflux.assestment.androidflux.store.MyStore
+import com.hardsoftstudio.rxflux.RxFlux
 import com.hardsoftstudio.rxflux.action.RxError
 import com.hardsoftstudio.rxflux.dispatcher.RxViewDispatch
 import com.hardsoftstudio.rxflux.store.RxStore
 import com.hardsoftstudio.rxflux.store.RxStoreChange
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), RxViewDispatch {
+
     private val TAG = "MAINACTIVITY"
 
-    @Inject
-    lateinit var connectWifiActionCreator: ConnectWifiActionCreator
-
-    @Inject
-    lateinit var store: NumberStore
-
-    @Inject
-    lateinit var app: Application
+    var rxFlux: RxFlux? = null
+    var myStore: MyStore? = null
+    var myActionCreator: MyActionCreators? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        component.inject(this)
-        mBtnConnect.setOnClickListener {
-            store.getNumbers()
-        }
 
+        rxFlux = RxFlux.init(application)
+
+        myStore = MyStore(rxFlux!!.dispatcher)
+        myActionCreator = MyActionCreators(rxFlux!!.dispatcher, rxFlux!!.subscriptionManager)
+
+        mBtnConnect.setOnClickListener {
+            myActionCreator!!.connectWifi()
+        }
     }
 
     override fun onRxViewUnRegistered() {
@@ -45,17 +44,19 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
     }
 
     override fun onRxViewRegistered() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onRxError(error: RxError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
     }
 
-    override fun getRxStoreListToRegister(): MutableList<RxStore>? {
-        return mutableListOf(store)
+    override fun getRxStoreListToRegister(): MutableList<RxStore?> {
+        return mutableListOf(myStore)
     }
 
     override fun onRxStoreChanged(change: RxStoreChange) {
+        when (change.storeId) {
+            "MY_STORE" -> Toast.makeText(this, "Test", Toast.LENGTH_LONG).show()
+        }
     }
 }
