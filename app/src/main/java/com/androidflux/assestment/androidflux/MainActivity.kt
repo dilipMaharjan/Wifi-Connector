@@ -1,8 +1,11 @@
 package com.androidflux.assestment.androidflux
 
+import android.app.Application
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.androidflux.assestment.androidflux.action.ConnectWifiActionCreator
+import com.androidflux.assestment.androidflux.dagger.DaggerApplicationComponent
+import com.androidflux.assestment.androidflux.dagger.component
 import com.androidflux.assestment.androidflux.store.NumberStore
 import com.hardsoftstudio.rxflux.action.RxError
 import com.hardsoftstudio.rxflux.dispatcher.RxViewDispatch
@@ -15,16 +18,20 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
     private val TAG = "MAINACTIVITY"
 
     @Inject
-    lateinit var actionCreator: ConnectWifiActionCreator
+    lateinit var connectWifiActionCreator: ConnectWifiActionCreator
 
     @Inject
     lateinit var store: NumberStore
 
+    @Inject
+    lateinit var app: Application
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        component.inject(this)
         mBtnConnect.setOnClickListener {
-            actionCreator.getNumbers()
+            store.getNumbers()
         }
 
     }

@@ -13,7 +13,7 @@ import javax.inject.Inject
  *
  *   Created by Dilip Maharjan on 06-06-2018
  */
-class MyApplication : Application() {
+class Application : Application() {
     private val TAG = "MYAPPLICATION"
 
     lateinit var component: ApplicationComponent

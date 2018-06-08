@@ -11,7 +11,7 @@ import javax.inject.Singleton
  *   Created by Dilip Maharjan on 06-06-2018
  */
 @Module
-class AndroidModule(private val application: Application) {
+class AndroidModule(val application: Application) {
 
     @Provides
     @Singleton
@@ -19,6 +19,6 @@ class AndroidModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun providesRxFlux() = RxFlux.init(application)
+    fun providesRxFlux(): RxFlux = RxFlux.init(application)
 
 }
