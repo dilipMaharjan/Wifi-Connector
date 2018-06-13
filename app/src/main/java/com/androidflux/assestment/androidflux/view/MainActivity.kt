@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
         mBtnConnect.setOnClickListener {
             MyApp.getApp().myActionCreator.connectWifi(this, "TravelTab", "123456789")
         }
+
     }
 
     override fun onRxViewUnRegistered() {
@@ -55,7 +56,9 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
         when (change.storeId) {
             "MY_STORE" -> {
                 if (change.rxAction.get<Boolean>("status")) {
-                    Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
+                    status.text = "Connection Successful"
+                } else {
+                    status.text = "Connection Failed"
                 }
             }
         }
