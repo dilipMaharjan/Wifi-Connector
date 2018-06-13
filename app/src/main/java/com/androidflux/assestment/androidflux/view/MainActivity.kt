@@ -2,13 +2,10 @@ package com.androidflux.assestment.androidflux.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
 import com.androidflux.assestment.androidflux.MyApp
 import com.androidflux.assestment.androidflux.R
-import com.androidflux.assestment.androidflux.action.MyActionCreators
-import com.androidflux.assestment.androidflux.store.MyStore
-import com.hardsoftstudio.rxflux.RxFlux
+import com.androidflux.assestment.androidflux.store.ConnectWifiStore
 import com.hardsoftstudio.rxflux.action.RxError
 import com.hardsoftstudio.rxflux.dispatcher.RxViewDispatch
 import com.hardsoftstudio.rxflux.store.RxStore
@@ -19,7 +16,8 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
 
     private val TAG = "MAINACTIVITY"
 
-    lateinit var myStore: MyStore
+    private lateinit var wifiStore: ConnectWifiStore
+    var status = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,9 +25,8 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
         setContentView(R.layout.activity_main)
 
         mBtnConnect.setOnClickListener {
-            MyApp.getApp().myActionCreator.connectWifi(this, "TravelTab", "123456789")
+            MyApp.getApp().actionCreators.connectWifi(this, "TravelTab", "123456789")
         }
-
     }
 
     override fun onRxViewUnRegistered() {
@@ -37,7 +34,7 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
     }
 
     override fun getRxStoreListToUnRegister(): MutableList<RxStore> {
-        return mutableListOf(myStore)
+        return mutableListOf(wifiStore)
     }
 
     override fun onRxViewRegistered() {
@@ -48,17 +45,16 @@ class MainActivity : AppCompatActivity(), RxViewDispatch {
     }
 
     override fun getRxStoreListToRegister(): MutableList<RxStore?> {
-        myStore = MyStore(MyApp.getApp().rxFlux.dispatcher)
-        return mutableListOf(myStore)
+        wifiStore = ConnectWifiStore(MyApp.getApp().rxFlux.dispatcher)
+        return mutableListOf(wifiStore)
     }
 
     override fun onRxStoreChanged(change: RxStoreChange) {
         when (change.storeId) {
-            "MY_STORE" -> {
-                if (change.rxAction.get<Boolean>("status")) {
-                    status.text = "Connection Successful"
-                } else {
-                    status.text = "Connection Failed"
+            "CONNECT_WIFI_STORE" -> {
+                status = change.rxAction.get<Boolean>("status")
+                if (status) {
+                    statusTv.text = "Connection Successful"
                 }
             }
         }

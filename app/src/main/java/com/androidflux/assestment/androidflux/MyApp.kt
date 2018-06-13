@@ -1,13 +1,12 @@
 package com.androidflux.assestment.androidflux
 
 import android.app.Application
-import com.androidflux.assestment.androidflux.MyApp.Companion.instance
-import com.androidflux.assestment.androidflux.action.MyActionCreators
+import com.androidflux.assestment.androidflux.action.ActionCreators
 import com.hardsoftstudio.rxflux.RxFlux
 
 class MyApp : Application() {
     lateinit var rxFlux: RxFlux
-    lateinit var myActionCreator: MyActionCreators
+    lateinit var actionCreators: ActionCreators
 
     init {
         instance = this
@@ -26,7 +25,7 @@ class MyApp : Application() {
         super.onCreate()
 
         rxFlux = RxFlux.init(this)
-        myActionCreator = MyActionCreators(rxFlux.dispatcher, rxFlux.subscriptionManager)
+        actionCreators = ActionCreators(rxFlux.dispatcher, rxFlux.subscriptionManager)
     }
 
     fun getApp(): MyApp = this
