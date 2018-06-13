@@ -18,7 +18,6 @@ class MyActionCreators(dispatcher: Dispatcher, subscriptionManager: Subscription
         val action = newRxAction("WIFI_CONNECTION")
         addRxAction(action,
                 connect(context, ssid, password).subscribe {
-                    println("emitted: " + it.toString())
                     postRxAction(newRxAction("WIFI_CONNECTION", "status", it))
                 })
     }
