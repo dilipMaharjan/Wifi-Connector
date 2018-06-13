@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidFlux</string>
+    <string name="btn_connect_string">Connect</string>
 </resources>
