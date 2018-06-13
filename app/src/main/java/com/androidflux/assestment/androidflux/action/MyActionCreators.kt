@@ -1,6 +1,8 @@
 package com.androidflux.assestment.androidflux.action
 
+import android.content.Context
 import android.util.Log
+import com.androidflux.assestment.androidflux.utilities.connect
 import com.hardsoftstudio.rxflux.action.RxActionCreator
 import com.hardsoftstudio.rxflux.dispatcher.Dispatcher
 import com.hardsoftstudio.rxflux.util.SubscriptionManager
@@ -12,15 +14,12 @@ import rx.Observable
  */
 class MyActionCreators(dispatcher: Dispatcher, subscriptionManager: SubscriptionManager) : RxActionCreator(dispatcher, subscriptionManager), MyAction {
     private val TAG = "MyActionCreator"
-    override fun connectWifi() {
+    override fun connectWifi(context: Context, ssid: String, password: String) {
         val action = newRxAction("WIFI_CONNECTION")
         addRxAction(action,
-                connect().subscribe {
+                connect(context, ssid, password).subscribe {
+                    println("emitted: " + it.toString())
                     postRxAction(newRxAction("WIFI_CONNECTION", "status", it))
                 })
-    }
-
-    private fun connect(): Observable<Boolean> {
-        return Observable.just(false).map { true }
     }
 }
